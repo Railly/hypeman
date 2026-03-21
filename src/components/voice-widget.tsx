@@ -29,6 +29,7 @@ export function VoiceWidget({ hypeSheet, hypeStyle = "hypebeast" }: VoiceWidgetP
 
       await conversation.startSession({
         agentId: "agent_4901km7hje4xeypsj40wkwxn3fkn",
+        connectionType: "webrtc",
         dynamicVariables: {
           profile_data: profileData,
           hype_style: hypeStyle,
