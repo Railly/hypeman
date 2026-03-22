@@ -147,30 +147,6 @@ export default async function TwitterImage() {
             </span>
           </div>
 
-          <div style={{ color: "#404040", fontSize: 32 }}>+</div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <div
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: "50%",
-                background: "linear-gradient(135deg, #D97706, #F59E0B)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 20,
-                fontWeight: 800,
-                color: "#000",
-                fontFamily: "sans-serif",
-              }}
-            >
-              C
-            </div>
-            <span style={{ fontSize: 28, color: "#fff", fontWeight: 600, fontFamily: "sans-serif" }}>
-              Claude
-            </span>
-          </div>
         </div>
       </div>
     ),
