@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import type { HypeSheet } from "@/lib/synthesize";
 import { ProfileResult } from "@/components/profile-result";
 import { ElevenlabsLogo } from "@/components/logos/elevenlabs";
@@ -169,6 +169,25 @@ function PoweredBy({ opacity = "opacity-40" }: { opacity?: string }) {
 
 type AppState = "idle" | "loading" | "transitioning" | "result";
 
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (
+        container: string | HTMLElement,
+        options: {
+          sitekey: string;
+          callback: (token: string) => void;
+          "error-callback"?: () => void;
+          size: "invisible";
+        }
+      ) => string;
+      reset: (widgetId: string) => void;
+    };
+  }
+}
+
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+
 export default function Home() {
   const [input, setInput] = useState("");
   const [appState, setAppState] = useState<AppState>("idle");
@@ -176,6 +195,25 @@ export default function Home() {
   const [error, setError] = useState("");
   const [hypeStyle, setHypeStyle] = useState<HypeStyle>("hypebeast");
   const formRef = useRef<HTMLFormElement>(null);
+  const turnstileRef = useRef<HTMLDivElement>(null);
+  const widgetIdRef = useRef<string | null>(null);
+  const turnstileTokenRef = useRef<string | null>(null);
+
+  const initTurnstile = useCallback(() => {
+    if (!TURNSTILE_SITE_KEY || !window.turnstile || !turnstileRef.current || widgetIdRef.current) return;
+    widgetIdRef.current = window.turnstile.render(turnstileRef.current, {
+      sitekey: TURNSTILE_SITE_KEY,
+      callback: (token: string) => { turnstileTokenRef.current = token; },
+      "error-callback": () => { turnstileTokenRef.current = null; },
+      size: "invisible",
+    });
+  }, []);
+
+  useEffect(() => {
+    initTurnstile();
+    const interval = setInterval(initTurnstile, 500);
+    return () => clearInterval(interval);
+  }, [initTurnstile]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -189,9 +227,12 @@ export default function Home() {
       const signRes = await fetch("/api/sign", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ input }),
+        body: JSON.stringify({ input, turnstileToken: turnstileTokenRef.current }),
       });
-      if (!signRes.ok) throw new Error("Failed to sign");
+      if (!signRes.ok) {
+        const data = (await signRes.json()) as { error?: string };
+        throw new Error(data.error || "Failed to sign");
+      }
       const { signature, timestamp } = (await signRes.json()) as {
         signature: string;
         timestamp: string;
@@ -212,6 +253,11 @@ export default function Home() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong. Try again.");
       setAppState("idle");
+    } finally {
+      if (widgetIdRef.current && window.turnstile) {
+        window.turnstile.reset(widgetIdRef.current);
+        turnstileTokenRef.current = null;
+      }
     }
   }
 
@@ -268,6 +314,8 @@ export default function Home() {
               )}
             </button>
           </div>
+
+          <div ref={turnstileRef} />
 
           {isIdle && (
             <div

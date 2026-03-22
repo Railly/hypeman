@@ -17,6 +17,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`dark ${GeistSans.variable} ${GeistMono.variable} ${GeistPixelSquare.variable}`}>
+      <head>
+        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer />
+      </head>
       <body className="bg-black text-white antialiased font-sans">{children}</body>
     </html>
   );
