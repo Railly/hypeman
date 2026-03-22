@@ -69,14 +69,14 @@ function ProfileSection({
   );
 }
 
-function PoweredBy({ opacity = "opacity-40" }: { opacity?: string }) {
+function PoweredBy() {
   return (
     <div className="flex items-center justify-center gap-3">
       <span className="text-[10px] text-neutral-700 uppercase tracking-widest">Powered by</span>
       <div className="flex items-center gap-3">
-        <FirecrawlLogo variant="wordmark" mode="dark" className={`h-[18px] w-auto ${opacity}`} />
+        <FirecrawlLogo variant="wordmark" mode="dark" className="h-[18px] w-auto opacity-40" />
         <span className="text-neutral-800">+</span>
-        <ElevenlabsLogo variant="wordmark" mode="dark" className={`h-3 w-auto ${opacity}`} />
+        <ElevenlabsLogo variant="wordmark" mode="dark" className="h-3 w-auto opacity-40" />
       </div>
     </div>
   );
@@ -101,6 +101,7 @@ export function ProfileResult({
 }: ProfileResultProps) {
   const [hypeStyle, setHypeStyle] = useState<HypeStyle>(defaultStyle);
   const [copied, setCopied] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
 
   function handleShare() {
     const name = personName || hypeSheet.name;
@@ -111,29 +112,20 @@ export function ProfileResult({
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <div
-        className="border border-neutral-800 rounded-lg divide-y divide-neutral-800 overflow-hidden"
+        className="border border-neutral-800 rounded-lg p-8 text-center"
         style={{ animation: "scale-in 0.4s ease-out both" }}
       >
-        <div
-          className="p-5"
-          style={{ animation: "fade-up 0.4s ease-out 50ms both" }}
-        >
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <h2 className="text-xl font-medium text-white font-pixel">{hypeSheet.name}</h2>
-              <p className="text-sm text-neutral-400 mt-0.5">{hypeSheet.tagline}</p>
-              <p className="text-xs text-neutral-600 mt-0.5">{hypeSheet.role}</p>
-            </div>
-            <div className="flex items-center gap-1 shrink-0">
-              {hypeSheet.socialLinks.length > 0 && (
-                <div className="flex gap-0.5">
-                  {hypeSheet.socialLinks.map((link) => (
-                    <SocialLink key={link.platform} platform={link.platform} url={link.url} />
-                  ))}
-                </div>
-              )}
+        <div style={{ animation: "fade-up 0.4s ease-out 50ms both" }}>
+          <h2 className="text-2xl font-medium text-white font-pixel">{hypeSheet.name}</h2>
+          <p className="text-sm text-neutral-400 mt-1">{hypeSheet.tagline}</p>
+
+          {hypeSheet.socialLinks.length > 0 && (
+            <div className="flex gap-0.5 justify-center mt-2">
+              {hypeSheet.socialLinks.map((link) => (
+                <SocialLink key={link.platform} platform={link.platform} url={link.url} />
+              ))}
               {showShareButton && (
                 <button
                   type="button"
@@ -154,100 +146,128 @@ export function ProfileResult({
                 </button>
               )}
             </div>
+          )}
+        </div>
+
+        <div className="my-6" style={{ animation: "fade-up 0.4s ease-out 150ms both" }}>
+          <div className="flex gap-1.5 justify-center mb-5">
+            {STYLES.map(({ key, label }) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setHypeStyle(key)}
+                className={`px-2.5 py-1 text-xs rounded transition-all duration-150 ${
+                  hypeStyle === key
+                    ? "bg-white text-black"
+                    : "text-neutral-500 hover:text-neutral-300"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
           </div>
+
+          <VoiceWidget hypeSheet={hypeSheet} hypeStyle={hypeStyle} />
         </div>
+      </div>
 
-        {hypeSheet.achievements.length > 0 && (
-          <ProfileSection title="Achievements" delay={150}>
-            <ul className="space-y-1.5">
-              {hypeSheet.achievements.map((a, i) => (
-                <li
-                  key={i}
-                  className="text-sm text-neutral-300 flex items-start gap-2"
-                  style={{ animation: `fade-up 0.3s ease-out ${200 + i * 40}ms both` }}
-                >
-                  <span className="text-neutral-600 mt-1 shrink-0 text-[8px]">&#9679;</span>
-                  {a}
-                </li>
-              ))}
-            </ul>
-          </ProfileSection>
-        )}
+      <button
+        type="button"
+        onClick={() => setShowProfile(!showProfile)}
+        className="w-full flex items-center justify-between px-4 py-3 border border-neutral-800 rounded-lg text-xs text-neutral-500 hover:text-neutral-300 hover:border-neutral-700 transition-all duration-200"
+        style={{ animation: "fade-up 0.3s ease-out 300ms both" }}
+      >
+        <span className="uppercase tracking-widest font-medium">
+          {showProfile ? "Hide" : "View"} profile data
+        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-neutral-700 font-mono">{totalSources} sources</span>
+          <svg
+            className={`w-3.5 h-3.5 transition-transform duration-200 ${showProfile ? "rotate-180" : ""}`}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+        </div>
+      </button>
 
-        {hypeSheet.projects.length > 0 && (
-          <ProfileSection title="Projects" delay={300}>
-            <div className="space-y-2">
-              {hypeSheet.projects.map((p, i) => (
-                <div
-                  key={i}
-                  className="flex items-baseline justify-between gap-3"
-                  style={{ animation: `fade-up 0.3s ease-out ${350 + i * 40}ms both` }}
-                >
-                  <div className="min-w-0">
-                    <span className="text-sm text-white font-medium">{p.name}</span>
-                    <span className="text-sm text-neutral-500"> &mdash; {p.description}</span>
+      {showProfile && (
+        <div
+          className="border border-neutral-800 rounded-lg divide-y divide-neutral-800 overflow-hidden"
+          style={{ animation: "fade-up 0.3s ease-out both" }}
+        >
+          <div className="p-5">
+            <p className="text-xs text-neutral-600">{hypeSheet.role}</p>
+          </div>
+
+          {hypeSheet.achievements.length > 0 && (
+            <ProfileSection title="Achievements" delay={0}>
+              <ul className="space-y-1.5">
+                {hypeSheet.achievements.map((a, i) => (
+                  <li
+                    key={i}
+                    className="text-sm text-neutral-300 flex items-start gap-2"
+                    style={{ animation: `fade-up 0.3s ease-out ${i * 40}ms both` }}
+                  >
+                    <span className="text-neutral-600 mt-1 shrink-0 text-[8px]">&#9679;</span>
+                    {a}
+                  </li>
+                ))}
+              </ul>
+            </ProfileSection>
+          )}
+
+          {hypeSheet.projects.length > 0 && (
+            <ProfileSection title="Projects" delay={0}>
+              <div className="space-y-2">
+                {hypeSheet.projects.map((p, i) => (
+                  <div
+                    key={i}
+                    className="flex items-baseline justify-between gap-3"
+                    style={{ animation: `fade-up 0.3s ease-out ${i * 40}ms both` }}
+                  >
+                    <div className="min-w-0">
+                      <span className="text-sm text-white font-medium">{p.name}</span>
+                      <span className="text-sm text-neutral-500"> &mdash; {p.description}</span>
+                    </div>
+                    {p.stats && (
+                      <span className="text-xs text-neutral-600 shrink-0 font-mono">
+                        {p.stats}
+                      </span>
+                    )}
                   </div>
-                  {p.stats && (
-                    <span className="text-xs text-neutral-600 shrink-0 font-mono">
-                      {p.stats}
-                    </span>
-                  )}
-                </div>
-              ))}
-            </div>
-          </ProfileSection>
-        )}
+                ))}
+              </div>
+            </ProfileSection>
+          )}
 
-        {hypeSheet.surprisingFacts.length > 0 && (
-          <ProfileSection title="Did you know" delay={450}>
-            <ul className="space-y-1.5">
-              {hypeSheet.surprisingFacts.map((f, i) => (
-                <li
-                  key={i}
-                  className="text-sm text-neutral-500"
-                  style={{ animation: `fade-up 0.3s ease-out ${500 + i * 40}ms both` }}
-                >
-                  {f}
-                </li>
-              ))}
-            </ul>
-          </ProfileSection>
-        )}
-      </div>
-
-      <div
-        className="flex flex-col items-center gap-3"
-        style={{ animation: "fade-up 0.4s ease-out 550ms both" }}
-      >
-        <div className="flex gap-1.5">
-          {STYLES.map(({ key, label }) => (
-            <button
-              key={key}
-              type="button"
-              onClick={() => setHypeStyle(key)}
-              className={`px-2.5 py-1 text-xs rounded transition-all duration-150 ${
-                hypeStyle === key
-                  ? "bg-white text-black"
-                  : "text-neutral-500 hover:text-neutral-300"
-              }`}
-            >
-              {label}
-            </button>
-          ))}
+          {hypeSheet.surprisingFacts.length > 0 && (
+            <ProfileSection title="Did you know" delay={0}>
+              <ul className="space-y-1.5">
+                {hypeSheet.surprisingFacts.map((f, i) => (
+                  <li
+                    key={i}
+                    className="text-sm text-neutral-500"
+                    style={{ animation: `fade-up 0.3s ease-out ${i * 40}ms both` }}
+                  >
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </ProfileSection>
+          )}
         </div>
-        <VoiceWidget hypeSheet={hypeSheet} hypeStyle={hypeStyle} />
-      </div>
+      )}
 
-      <div style={{ animation: "fade-in 0.4s ease-out 700ms both" }}>
+      <div className="space-y-2 pt-1" style={{ animation: "fade-in 0.4s ease-out 400ms both" }}>
         <PoweredBy />
+        <p className="text-[10px] text-neutral-700 text-center font-mono">
+          {totalSources} sources / {searchCount} searches
+        </p>
       </div>
-
-      <p
-        className="text-[10px] text-neutral-700 text-center font-mono"
-        style={{ animation: "fade-in 0.4s ease-out 750ms both" }}
-      >
-        {totalSources} sources / {searchCount} searches
-      </p>
     </div>
   );
 }
