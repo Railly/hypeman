@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
-import { aggregateProfile } from "@/lib/firecrawl";
-import { synthesizeProfile } from "@/lib/synthesize";
 import { rateLimit } from "@/lib/rate-limit";
 import { verifySignature } from "@/lib/hmac";
-import { getCached, setCache } from "@/lib/cache";
+import { getCachedHype } from "@/lib/cached-hype";
 
 const TIMESTAMP_MAX_AGE = 30_000;
 
@@ -45,30 +43,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 403 });
   }
 
-  const cacheKey = `hype:${input.trim().toLowerCase()}`;
-  type HypeResult = { hypeSheet: ReturnType<typeof synthesizeProfile> extends Promise<infer T> ? T : never; searchSummary: { query: string; resultCount: number; sources: string[] }[]; totalSources: number };
-  const cached = getCached<HypeResult>(cacheKey);
-  if (cached) {
-    console.log(`[HypeMan] Cache hit for: "${input}"`);
-    return NextResponse.json(cached, {
-      headers: { "X-RateLimit-Remaining": remaining.toString(), "X-Cache": "HIT" },
-    });
-  }
-
-  console.log(`[HypeMan] Aggregating profile for: "${input}" (remaining: ${remaining})`);
-  const { searches, rawMarkdown } = await aggregateProfile(input);
-  const hypeSheet = await synthesizeProfile(rawMarkdown, input);
-
-  const searchSummary = searches.map((s) => ({
-    query: s.query,
-    resultCount: s.results.length,
-    sources: s.results.map((r) => r.title).filter(Boolean),
-  }));
-
-  const result = { hypeSheet, searchSummary, totalSources: searches.reduce((acc, s) => acc + s.results.length, 0) };
-  setCache(cacheKey, result);
+  const result = await getCachedHype(input);
 
   return NextResponse.json(result, {
-    headers: { "X-RateLimit-Remaining": remaining.toString(), "X-Cache": "MISS" },
+    headers: { "X-RateLimit-Remaining": remaining.toString() },
   });
 }
