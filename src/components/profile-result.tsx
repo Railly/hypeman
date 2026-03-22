@@ -194,11 +194,14 @@ export function ProfileResult({
         </div>
       </button>
 
-      {showProfile && (
-        <div
-          className="border border-neutral-800 rounded-lg divide-y divide-neutral-800 overflow-hidden"
-          style={{ animation: "fade-up 0.3s ease-out both" }}
-        >
+      <div
+        className="grid transition-all duration-300 ease-in-out"
+        style={{ gridTemplateRows: showProfile ? "1fr" : "0fr" }}
+      >
+        <div className="overflow-hidden">
+          <div
+            className={`border border-neutral-800 rounded-lg divide-y divide-neutral-800 overflow-hidden transition-opacity duration-300 ${showProfile ? "opacity-100" : "opacity-0"}`}
+          >
           <div className="p-5">
             <p className="text-xs text-neutral-600">{hypeSheet.role}</p>
           </div>
@@ -259,8 +262,9 @@ export function ProfileResult({
               </ul>
             </ProfileSection>
           )}
+          </div>
         </div>
-      )}
+      </div>
 
       <div className="space-y-2 pt-1" style={{ animation: "fade-in 0.4s ease-out 400ms both" }}>
         <PoweredBy />
