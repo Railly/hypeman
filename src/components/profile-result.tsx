@@ -126,25 +126,6 @@ export function ProfileResult({
               {hypeSheet.socialLinks.map((link) => (
                 <SocialLink key={link.platform} platform={link.platform} url={link.url} />
               ))}
-              {showShareButton && (
-                <button
-                  type="button"
-                  onClick={handleShare}
-                  className="p-1.5 text-neutral-600 hover:text-white transition-colors duration-150"
-                  title={copied ? "Copied!" : "Copy share link"}
-                >
-                  {copied ? (
-                    <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="currentColor">
-                      <path fillRule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z" clipRule="evenodd" />
-                    </svg>
-                  ) : (
-                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-                      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-                    </svg>
-                  )}
-                </button>
-              )}
             </div>
           )}
         </div>
@@ -169,6 +150,33 @@ export function ProfileResult({
 
           <VoiceWidget hypeSheet={hypeSheet} hypeStyle={hypeStyle} />
         </div>
+
+        {showShareButton && (
+          <div style={{ animation: "fade-up 0.4s ease-out 250ms both" }}>
+            <button
+              type="button"
+              onClick={handleShare}
+              className="flex items-center gap-2 mx-auto px-4 py-2 rounded-full border border-neutral-700 text-xs text-neutral-400 hover:text-white hover:border-neutral-500 transition-all duration-200"
+            >
+              {copied ? (
+                <>
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="currentColor">
+                    <path fillRule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z" clipRule="evenodd" />
+                  </svg>
+                  <span>Link copied!</span>
+                </>
+              ) : (
+                <>
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                  </svg>
+                  <span>Share this hype</span>
+                </>
+              )}
+            </button>
+          </div>
+        )}
       </div>
 
       <button
