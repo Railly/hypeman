@@ -8,6 +8,20 @@ export const metadata: Metadata = {
   title: "HypeMan - AI that hypes YOU up",
   description:
     "Paste your profile. AI finds everything about you online and pitches you like a rockstar.",
+  metadataBase: new URL("https://hypeman-beta.vercel.app"),
+  openGraph: {
+    title: "HypeMan - AI that hypes YOU up",
+    description:
+      "Paste your profile. AI finds everything about you online and pitches you like a rockstar.",
+    siteName: "HypeMan",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "HypeMan - AI that hypes YOU up",
+    description:
+      "Paste your profile. AI finds everything about you online and pitches you like a rockstar.",
+  },
 };
 
 export default function RootLayout({
