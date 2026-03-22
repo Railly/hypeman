@@ -54,17 +54,27 @@ export function VoiceWidget({ hypeSheet, hypeStyle = "hypebeast" }: VoiceWidgetP
   return (
     <div className="flex flex-col items-center gap-5">
       <div className="relative">
-        {isConnected && (
+        {isConnected && !isSpeaking && (
           <div
-            className="absolute -inset-3 rounded-full border border-white/5"
+            className="absolute -inset-3 rounded-full border border-green-500/20"
             style={{ animation: "pulse-ring 2s ease-out infinite" }}
           />
         )}
         {isConnected && isSpeaking && (
-          <div
-            className="absolute -inset-6 rounded-full border border-white/5"
-            style={{ animation: "pulse-ring 2s ease-out infinite 0.5s" }}
-          />
+          <>
+            <div
+              className="absolute -inset-3 rounded-full border border-violet-500/20"
+              style={{ animation: "pulse-ring 1.5s ease-out infinite" }}
+            />
+            <div
+              className="absolute -inset-6 rounded-full border border-violet-500/10"
+              style={{ animation: "pulse-ring 1.5s ease-out infinite 0.4s" }}
+            />
+            <div
+              className="absolute -inset-9 rounded-full border border-violet-500/5"
+              style={{ animation: "pulse-ring 1.5s ease-out infinite 0.8s" }}
+            />
+          </>
         )}
         <button
           type="button"
@@ -74,7 +84,9 @@ export function VoiceWidget({ hypeSheet, hypeStyle = "hypebeast" }: VoiceWidgetP
             relative w-20 h-20 rounded-full flex items-center justify-center
             transition-all duration-300 ease-out
             ${isConnected
-              ? "bg-white text-black scale-105"
+              ? isSpeaking
+                ? "bg-violet-500 text-white scale-110 shadow-[0_0_30px_rgba(139,92,246,0.3)]"
+                : "bg-green-500 text-white scale-105 shadow-[0_0_20px_rgba(34,197,94,0.2)]"
               : "bg-neutral-900 border border-neutral-700 text-white hover:border-neutral-500 hover:scale-105"
             }
             disabled:opacity-40 disabled:cursor-not-allowed
@@ -84,9 +96,25 @@ export function VoiceWidget({ hypeSheet, hypeStyle = "hypebeast" }: VoiceWidgetP
           {isStarting ? (
             <div className="w-5 h-5 border-2 border-neutral-500 border-t-white rounded-full animate-spin" />
           ) : isConnected ? (
-            <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-              <path fillRule="evenodd" d="M4.5 7.5a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3v-9Z" clipRule="evenodd" />
-            </svg>
+            isSpeaking ? (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
+                <path d="M9 9l3 3m0 0l3 3m-3-3l-3 3m3-3l3-3" />
+                <circle cx="12" cy="12" r="9" />
+              </svg>
+            ) : (
+              <div className="flex items-center gap-[3px]">
+                {[1, 2, 3, 4].map((i) => (
+                  <div
+                    key={i}
+                    className="w-[3px] rounded-full bg-white"
+                    style={{
+                      animation: `eq-bar 1s ease-in-out ${i * 0.15}s infinite`,
+                      height: "16px",
+                    }}
+                  />
+                ))}
+              </div>
+            )
           ) : (
             <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
               <path d="M8.25 4.5a3.75 3.75 0 1 1 7.5 0v8.25a3.75 3.75 0 1 1-7.5 0V4.5Z" />
@@ -97,7 +125,11 @@ export function VoiceWidget({ hypeSheet, hypeStyle = "hypebeast" }: VoiceWidgetP
       </div>
 
       <div className="text-center space-y-1">
-        <p className="text-sm text-white font-medium transition-all duration-300">
+        <p className={`text-sm font-medium transition-all duration-300 ${
+          isConnected
+            ? isSpeaking ? "text-violet-400" : "text-green-400"
+            : "text-white"
+        }`}>
           {isConnected
             ? isSpeaking ? "HypeMan is speaking..." : "HypeMan is listening..."
             : "Tap to hear your hype"
