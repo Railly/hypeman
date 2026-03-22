@@ -186,19 +186,31 @@ export default function Home() {
     setResult(null);
 
     try {
-      const res = await fetch("/api/hype", {
+      const signRes = await fetch("/api/sign", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ input }),
       });
+      if (!signRes.ok) throw new Error("Failed to sign");
+      const { signature, timestamp } = (await signRes.json()) as {
+        signature: string;
+        timestamp: string;
+      };
 
+      const res = await fetch("/api/hype", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ input, signature, timestamp }),
+      });
+
+      if (res.status === 429) throw new Error("Rate limit exceeded. Try again in a minute.");
       if (!res.ok) throw new Error("Failed to fetch");
       const data = (await res.json()) as HypeResponse;
       setResult(data);
       setAppState("transitioning");
       setTimeout(() => setAppState("result"), 100);
-    } catch {
-      setError("Something went wrong. Try again.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Try again.");
       setAppState("idle");
     }
   }
