@@ -1,0 +1,20 @@
+{
+    "agents": [
+        {
+            "config": "agent_configs/HypeMan-Pro-V2.json",
+            "id": "agent_4901km7hje4xeypsj40wkwxn3fkn"
+        },
+        {
+            "config": "agent_configs/HypeMan-Pro.json",
+            "id": "agent_6301km7hg8s6eecats6mkpetm083"
+        },
+        {
+            "config": "agent_configs/Crafternauta.json",
+            "id": "agent_01jyhd4e8xe3s938k2ddnywerk"
+        },
+        {
+            "config": "agent_configs/Linear-Voice-Agent.json",
+            "id": "agent_01jx438zwjespbtqrw6mkkzymh"
+        }
+    ]
+}
