@@ -22,7 +22,7 @@ const STYLE_COLORS: Record<HypeStyle, [string, string]> = {
 
 function useDebouncedSpeaking(isSpeaking: boolean, isConnected: boolean, delay = 1500) {
   const [stable, setStable] = useState(false);
-  const timeout = useRef<ReturnType<typeof setTimeout>>();
+  const timeout = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
     if (!isConnected) {

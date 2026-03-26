@@ -50,13 +50,16 @@ Write a 30-40 second spoken pitch about this person. ONLY use facts from the pro
     "cjVigY5qzO86Huf0OWal",
     {
       text: pitchText,
-      model_id: "eleven_turbo_v2",
+      modelId: "eleven_turbo_v2",
     }
   );
 
   const chunks: Uint8Array[] = [];
-  for await (const chunk of audioStream) {
-    chunks.push(chunk);
+  const reader = audioStream.getReader();
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    if (value) chunks.push(value);
   }
   const audioBuffer = Buffer.concat(chunks);
 
