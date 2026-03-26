@@ -115,7 +115,7 @@ export function VoiceWidget({ hypeSheet, hypeStyle = "hypebeast" }: VoiceWidgetP
       >
         {isStarting ? (
           <div className="w-full h-full flex items-center justify-center">
-            <div className="w-8 h-8 border-2 border-neutral-600 border-t-white rounded-full animate-spin" />
+            <div className="w-8 h-8 border-2 border-muted border-t-foreground rounded-full animate-spin" />
           </div>
         ) : (
           <Orb
@@ -135,8 +135,8 @@ export function VoiceWidget({ hypeSheet, hypeStyle = "hypebeast" }: VoiceWidgetP
             flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium
             transition-all duration-200
             ${isMuted
-              ? "bg-neutral-800 border border-neutral-700 text-neutral-400 hover:border-neutral-500"
-              : "bg-white/5 border border-white/20 text-white hover:bg-white/10"
+              ? "bg-accent border border-border text-muted-foreground hover:border-muted"
+              : "bg-foreground/5 border border-foreground/20 text-foreground hover:bg-foreground/10"
             }
           `}
         >
@@ -165,7 +165,7 @@ export function VoiceWidget({ hypeSheet, hypeStyle = "hypebeast" }: VoiceWidgetP
             spread={2}
           />
         ) : (
-          <p className="text-sm font-medium text-neutral-300">
+          <p className="text-sm font-medium text-muted-foreground">
             {isStarting
               ? "Connecting..."
               : isConnected
@@ -176,7 +176,7 @@ export function VoiceWidget({ hypeSheet, hypeStyle = "hypebeast" }: VoiceWidgetP
             }
           </p>
         )}
-        <p className="text-[11px] text-neutral-600">
+        <p className="text-[11px] text-muted">
           {isConnected ? "Tap orb to end session" : "Powered by ElevenLabs"}
         </p>
       </div>

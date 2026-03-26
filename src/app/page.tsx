@@ -5,6 +5,8 @@ import type { HypeSheet } from "@/lib/synthesize";
 import { ProfileResult } from "@/components/profile-result";
 import { ElevenlabsLogo } from "@/components/logos/elevenlabs";
 import { FirecrawlLogo } from "@/components/logos/firecrawl";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { useTheme } from "@/components/theme-provider";
 
 interface HypeResponse {
   hypeSheet: HypeSheet;
@@ -51,17 +53,17 @@ function SearchProgress() {
       className="space-y-6"
       style={{ animation: "fade-up 0.3s ease-out both" }}
     >
-      <div className="border border-neutral-800 rounded-lg overflow-hidden">
-        <div className="px-4 py-3 border-b border-neutral-800 flex items-center justify-between">
-          <span className="text-xs text-neutral-500 font-mono">
+      <div className="border border-border rounded-lg overflow-hidden">
+        <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+          <span className="text-xs text-muted-foreground font-mono">
             Searching {SEARCH_STEPS.length} sources
           </span>
-          <span className="text-xs text-neutral-600 font-mono tabular-nums">
+          <span className="text-xs text-muted font-mono tabular-nums">
             {elapsed}s
           </span>
         </div>
 
-        <div className="divide-y divide-neutral-900">
+        <div className="divide-y divide-border">
           {SEARCH_STEPS.map((s, i) => {
             const isDone = i < step;
             const isCurrent = i === step;
@@ -79,31 +81,31 @@ function SearchProgress() {
                 <div className="flex items-center gap-2.5">
                   <div className="w-4 h-4 flex items-center justify-center">
                     {isDone ? (
-                      <svg className="w-3.5 h-3.5 text-white" style={{ animation: "scale-in 0.2s ease-out both" }} viewBox="0 0 16 16" fill="currentColor">
+                      <svg className="w-3.5 h-3.5 text-foreground" style={{ animation: "scale-in 0.2s ease-out both" }} viewBox="0 0 16 16" fill="currentColor">
                         <path fillRule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z" clipRule="evenodd" />
                       </svg>
                     ) : isCurrent ? (
-                      <div className="w-1.5 h-1.5 rounded-full bg-white" style={{ animation: "pulse-ring 1.5s ease-out infinite" }} />
+                      <div className="w-1.5 h-1.5 rounded-full bg-foreground" style={{ animation: "pulse-ring 1.5s ease-out infinite" }} />
                     ) : (
-                      <div className="w-1 h-1 rounded-full bg-neutral-700" />
+                      <div className="w-1 h-1 rounded-full bg-muted" />
                     )}
                   </div>
-                  <span className={`text-sm ${isDone ? "text-neutral-400" : isCurrent ? "text-white" : "text-neutral-700"}`}>
+                  <span className={`text-sm ${isDone ? "text-muted-foreground" : isCurrent ? "text-foreground" : "text-muted"}`}>
                     {s.label}
                   </span>
                 </div>
                 {isDone && (
-                  <span className="text-[10px] text-neutral-600 font-mono" style={{ animation: "fade-in 0.2s ease-out both" }}>
+                  <span className="text-[10px] text-muted font-mono" style={{ animation: "fade-in 0.2s ease-out both" }}>
                     done
                   </span>
                 )}
                 {isCurrent && (
                   <div
-                    className="h-1 w-12 rounded-full overflow-hidden bg-neutral-800"
+                    className="h-1 w-12 rounded-full overflow-hidden bg-border"
                     style={{ animation: "fade-in 0.2s ease-out both" }}
                   >
                     <div
-                      className="h-full bg-neutral-400 rounded-full"
+                      className="h-full bg-muted-foreground rounded-full"
                       style={{
                         animation: "progress-fill 2.5s ease-out both",
                         width: "85%",
@@ -116,9 +118,9 @@ function SearchProgress() {
           })}
         </div>
 
-        <div className="h-px bg-neutral-800">
+        <div className="h-px bg-border">
           <div
-            className="h-px bg-white/40 transition-all duration-700 ease-out"
+            className="h-px bg-foreground/40 transition-all duration-700 ease-out"
             style={{ width: `${((step + 1) / SEARCH_STEPS.length) * 100}%` }}
           />
         </div>
@@ -126,27 +128,30 @@ function SearchProgress() {
 
       <div className="space-y-3">
         <div
-          className="h-5 rounded bg-neutral-900"
+          className="h-5 rounded bg-accent"
           style={{
-            backgroundImage: "linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent)",
+            backgroundImage: "linear-gradient(90deg, transparent, var(--foreground, #fff) 3%, transparent)",
             backgroundSize: "200% 100%",
             animation: "shimmer 1.5s ease-in-out infinite",
+            opacity: 0.05,
           }}
         />
         <div
-          className="h-5 rounded bg-neutral-900 w-3/4"
+          className="h-5 rounded bg-accent w-3/4"
           style={{
-            backgroundImage: "linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent)",
+            backgroundImage: "linear-gradient(90deg, transparent, var(--foreground, #fff) 3%, transparent)",
             backgroundSize: "200% 100%",
             animation: "shimmer 1.5s ease-in-out infinite 0.1s",
+            opacity: 0.05,
           }}
         />
         <div
-          className="h-5 rounded bg-neutral-900 w-1/2"
+          className="h-5 rounded bg-accent w-1/2"
           style={{
-            backgroundImage: "linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent)",
+            backgroundImage: "linear-gradient(90deg, transparent, var(--foreground, #fff) 3%, transparent)",
             backgroundSize: "200% 100%",
             animation: "shimmer 1.5s ease-in-out infinite 0.2s",
+            opacity: 0.05,
           }}
         />
       </div>
@@ -155,13 +160,16 @@ function SearchProgress() {
 }
 
 function PoweredBy({ opacity = "opacity-40" }: { opacity?: string }) {
+  const { resolved } = useTheme();
+  const mode = resolved;
+
   return (
     <div className="flex items-center justify-center gap-3">
-      <span className="text-[10px] text-neutral-700 uppercase tracking-widest">Powered by</span>
+      <span className="text-[10px] text-muted uppercase tracking-widest">Powered by</span>
       <div className="flex items-center gap-3">
-        <FirecrawlLogo variant="wordmark" mode="dark" className={`h-[18px] w-auto ${opacity}`} />
-        <span className="text-neutral-800">+</span>
-        <ElevenlabsLogo variant="wordmark" mode="dark" className={`h-3 w-auto ${opacity}`} />
+        <FirecrawlLogo variant="wordmark" mode={mode} className={`h-[18px] w-auto ${opacity}`} />
+        <span className="text-border">+</span>
+        <ElevenlabsLogo variant="wordmark" mode={mode} className={`h-3 w-auto ${opacity}`} />
       </div>
     </div>
   );
@@ -267,6 +275,10 @@ export default function Home() {
 
   return (
     <main className={`min-h-screen flex flex-col items-center p-8 transition-all duration-700 ${isIdle ? "justify-center" : "justify-start pt-12"}`}>
+      <div className="fixed top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
+
       <div className="max-w-xl w-full">
         <div
           className={`transition-all duration-500 ease-out ${isIdle ? "mb-8" : "mb-6"}`}
@@ -276,10 +288,10 @@ export default function Home() {
           }}
         >
           <div className={`text-center transition-all duration-500 ${isIdle ? "space-y-3" : "space-y-1"}`}>
-            <h1 className={`font-medium tracking-tight text-white font-pixel transition-all duration-500 ${isIdle ? "text-5xl" : "text-2xl"}`}>
+            <h1 className={`font-medium tracking-tight text-foreground font-pixel transition-all duration-500 ${isIdle ? "text-5xl" : "text-2xl"}`}>
               HypeMan
             </h1>
-            <p className={`text-neutral-500 transition-all duration-500 ${isIdle ? "text-base opacity-100 max-h-8" : "text-xs opacity-0 max-h-0 overflow-hidden"}`}>
+            <p className={`text-muted-foreground transition-all duration-500 ${isIdle ? "text-base opacity-100 max-h-8" : "text-xs opacity-0 max-h-0 overflow-hidden"}`}>
               Scrapes your digital footprint. Pitches you like a rockstar.
             </p>
           </div>
@@ -297,19 +309,19 @@ export default function Home() {
               onChange={(e) => setInput(e.target.value)}
               placeholder="Name, GitHub, or LinkedIn URL..."
               disabled={isLoading}
-              className="flex-1 px-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-lg text-white text-sm placeholder:text-neutral-600 focus:outline-none focus:border-neutral-600 transition-colors disabled:opacity-60"
+              className="flex-1 px-4 py-2.5 bg-input border border-border rounded-lg text-foreground text-sm placeholder:text-muted focus:outline-none focus:border-muted-foreground transition-colors disabled:opacity-60"
             />
             <button
               type="submit"
               disabled={isLoading || !input.trim()}
-              className="px-5 py-2.5 bg-white text-black text-sm font-medium rounded-lg hover:bg-neutral-200 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 relative overflow-hidden"
+              className="px-5 py-2.5 bg-foreground text-background text-sm font-medium rounded-lg hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 relative overflow-hidden"
             >
               <span className={`transition-all duration-200 ${isLoading ? "opacity-0" : "opacity-100"}`}>
                 Hype Me
               </span>
               {isLoading && (
                 <span className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-4 h-4 border-2 border-neutral-400 border-t-black rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-muted-foreground border-t-background rounded-full animate-spin" />
                 </span>
               )}
             </button>
@@ -329,8 +341,8 @@ export default function Home() {
                   onClick={() => setHypeStyle(key)}
                   className={`px-2.5 py-1 text-xs rounded transition-all duration-150 ${
                     hypeStyle === key
-                      ? "bg-white text-black"
-                      : "text-neutral-500 hover:text-neutral-300"
+                      ? "bg-foreground text-background"
+                      : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {label}

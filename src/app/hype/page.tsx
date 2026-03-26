@@ -14,9 +14,9 @@ export default async function HypePage({
     return (
       <main className="min-h-screen flex items-center justify-center p-8">
         <div className="text-center space-y-3">
-          <h1 className="text-2xl font-medium text-white font-pixel">HypeMan</h1>
-          <p className="text-sm text-neutral-500">Missing name parameter.</p>
-          <a href="/" className="text-sm text-neutral-400 hover:text-white transition-colors underline underline-offset-4">
+          <h1 className="text-2xl font-medium text-foreground font-pixel">HypeMan</h1>
+          <p className="text-sm text-muted-foreground">Missing name parameter.</p>
+          <a href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4">
             Go to HypeMan
           </a>
         </div>

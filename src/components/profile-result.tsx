@@ -5,6 +5,7 @@ import type { HypeSheet } from "@/lib/synthesize";
 import { VoiceWidget } from "@/components/voice-widget";
 import { ElevenlabsLogo } from "@/components/logos/elevenlabs";
 import { FirecrawlLogo } from "@/components/logos/firecrawl";
+import { useTheme } from "@/components/theme-provider";
 
 type HypeStyle = "professional" | "hypebeast" | "roast";
 
@@ -31,7 +32,7 @@ function SocialLink({ platform, url }: { platform: string; url: string }) {
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="p-1.5 text-neutral-600 hover:text-white transition-colors duration-150"
+      className="p-1.5 text-muted hover:text-foreground transition-colors duration-150"
       title={platform}
     >
       <svg
@@ -61,7 +62,7 @@ function ProfileSection({
       className="p-5"
       style={{ animation: `fade-up 0.4s ease-out ${delay}ms both` }}
     >
-      <h3 className="text-[10px] font-medium text-neutral-600 uppercase tracking-widest mb-2.5">
+      <h3 className="text-[10px] font-medium text-muted uppercase tracking-widest mb-2.5">
         {title}
       </h3>
       {children}
@@ -70,13 +71,16 @@ function ProfileSection({
 }
 
 function PoweredBy() {
+  const { resolved } = useTheme();
+  const mode = resolved;
+
   return (
     <div className="flex items-center justify-center gap-3">
-      <span className="text-[10px] text-neutral-700 uppercase tracking-widest">Powered by</span>
+      <span className="text-[10px] text-muted uppercase tracking-widest">Powered by</span>
       <div className="flex items-center gap-3">
-        <FirecrawlLogo variant="wordmark" mode="dark" className="h-[18px] w-auto opacity-40" />
-        <span className="text-neutral-800">+</span>
-        <ElevenlabsLogo variant="wordmark" mode="dark" className="h-3 w-auto opacity-40" />
+        <FirecrawlLogo variant="wordmark" mode={mode} className="h-[18px] w-auto opacity-40" />
+        <span className="text-border">+</span>
+        <ElevenlabsLogo variant="wordmark" mode={mode} className="h-3 w-auto opacity-40" />
       </div>
     </div>
   );
@@ -114,12 +118,12 @@ export function ProfileResult({
   return (
     <div className="space-y-4">
       <div
-        className="border border-neutral-800 rounded-lg p-8 text-center"
+        className="border border-border rounded-lg p-8 text-center"
         style={{ animation: "scale-in 0.4s ease-out both" }}
       >
         <div style={{ animation: "fade-up 0.4s ease-out 50ms both" }}>
-          <h2 className="text-2xl font-medium text-white font-pixel">{hypeSheet.name}</h2>
-          <p className="text-sm text-neutral-400 mt-1">{hypeSheet.tagline}</p>
+          <h2 className="text-2xl font-medium text-foreground font-pixel">{hypeSheet.name}</h2>
+          <p className="text-sm text-muted-foreground mt-1">{hypeSheet.tagline}</p>
 
           {hypeSheet.socialLinks.length > 0 && (
             <div className="flex gap-0.5 justify-center mt-2">
@@ -139,8 +143,8 @@ export function ProfileResult({
                 onClick={() => setHypeStyle(key)}
                 className={`px-2.5 py-1 text-xs rounded transition-all duration-150 ${
                   hypeStyle === key
-                    ? "bg-white text-black"
-                    : "text-neutral-500 hover:text-neutral-300"
+                    ? "bg-foreground text-background"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {label}
@@ -156,7 +160,7 @@ export function ProfileResult({
             <button
               type="button"
               onClick={handleShare}
-              className="flex items-center gap-2 mx-auto px-4 py-2 rounded-full border border-neutral-700 text-xs text-neutral-400 hover:text-white hover:border-neutral-500 transition-all duration-200"
+              className="flex items-center gap-2 mx-auto px-4 py-2 rounded-full border border-border text-xs text-muted-foreground hover:text-foreground hover:border-muted transition-all duration-200"
             >
               {copied ? (
                 <>
@@ -182,14 +186,14 @@ export function ProfileResult({
       <button
         type="button"
         onClick={() => setShowProfile(!showProfile)}
-        className="w-full flex items-center justify-between px-4 py-3 border border-neutral-800 rounded-lg text-xs text-neutral-500 hover:text-neutral-300 hover:border-neutral-700 transition-all duration-200"
+        className="w-full flex items-center justify-between px-4 py-3 border border-border rounded-lg text-xs text-muted-foreground hover:text-foreground hover:border-muted transition-all duration-200"
         style={{ animation: "fade-up 0.3s ease-out 300ms both" }}
       >
         <span className="uppercase tracking-widest font-medium">
           {showProfile ? "Hide" : "View"} profile data
         </span>
         <div className="flex items-center gap-2">
-          <span className="text-neutral-700 font-mono">{totalSources} sources</span>
+          <span className="text-muted font-mono">{totalSources} sources</span>
           <svg
             className={`w-3.5 h-3.5 transition-transform duration-200 ${showProfile ? "rotate-180" : ""}`}
             viewBox="0 0 24 24"
@@ -208,10 +212,10 @@ export function ProfileResult({
       >
         <div className="overflow-hidden">
           <div
-            className={`border border-neutral-800 rounded-lg divide-y divide-neutral-800 overflow-hidden transition-opacity duration-300 ${showProfile ? "opacity-100" : "opacity-0"}`}
+            className={`border border-border rounded-lg divide-y divide-border overflow-hidden transition-opacity duration-300 ${showProfile ? "opacity-100" : "opacity-0"}`}
           >
           <div className="p-5">
-            <p className="text-xs text-neutral-600">{hypeSheet.role}</p>
+            <p className="text-xs text-muted">{hypeSheet.role}</p>
           </div>
 
           {hypeSheet.achievements.length > 0 && (
@@ -220,10 +224,10 @@ export function ProfileResult({
                 {hypeSheet.achievements.map((a, i) => (
                   <li
                     key={i}
-                    className="text-sm text-neutral-300 flex items-start gap-2"
+                    className="text-sm text-muted-foreground flex items-start gap-2"
                     style={{ animation: `fade-up 0.3s ease-out ${i * 40}ms both` }}
                   >
-                    <span className="text-neutral-600 mt-1 shrink-0 text-[8px]">&#9679;</span>
+                    <span className="text-muted mt-1 shrink-0 text-[8px]">&#9679;</span>
                     {a}
                   </li>
                 ))}
@@ -241,11 +245,11 @@ export function ProfileResult({
                     style={{ animation: `fade-up 0.3s ease-out ${i * 40}ms both` }}
                   >
                     <div className="min-w-0">
-                      <span className="text-sm text-white font-medium">{p.name}</span>
-                      <span className="text-sm text-neutral-500"> &mdash; {p.description}</span>
+                      <span className="text-sm text-foreground font-medium">{p.name}</span>
+                      <span className="text-sm text-muted-foreground"> &mdash; {p.description}</span>
                     </div>
                     {p.stats && (
-                      <span className="text-xs text-neutral-600 shrink-0 font-mono">
+                      <span className="text-xs text-muted shrink-0 font-mono">
                         {p.stats}
                       </span>
                     )}
@@ -261,7 +265,7 @@ export function ProfileResult({
                 {hypeSheet.surprisingFacts.map((f, i) => (
                   <li
                     key={i}
-                    className="text-sm text-neutral-500"
+                    className="text-sm text-muted-foreground"
                     style={{ animation: `fade-up 0.3s ease-out ${i * 40}ms both` }}
                   >
                     {f}
@@ -276,7 +280,7 @@ export function ProfileResult({
 
       <div className="space-y-2 pt-1" style={{ animation: "fade-in 0.4s ease-out 400ms both" }}>
         <PoweredBy />
-        <p className="text-[10px] text-neutral-700 text-center font-mono">
+        <p className="text-[10px] text-muted text-center font-mono">
           {totalSources} sources / {searchCount} searches
         </p>
       </div>

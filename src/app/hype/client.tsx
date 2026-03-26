@@ -23,11 +23,11 @@ export function HypePageClient({
       <div className="max-w-xl w-full">
         <div className="text-center mb-6 space-y-1">
           <a href="/" className="inline-block">
-            <h1 className="text-2xl font-medium text-white font-pixel hover:opacity-80 transition-opacity">
+            <h1 className="text-2xl font-medium text-foreground font-pixel hover:opacity-80 transition-opacity">
               HypeMan
             </h1>
           </a>
-          <p className="text-xs text-neutral-600">
+          <p className="text-xs text-muted">
             Hype sheet for {personName}
           </p>
         </div>
